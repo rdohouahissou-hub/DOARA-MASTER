@@ -1,3 +1,4 @@
+
 name: Construire DOARA MASTER APK
 
 on:
@@ -24,13 +25,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Installer Gradle 8.9
+      - name: Installer Gradle
         run: |
           wget https://services.gradle.org/distributions/gradle-8.9-bin.zip -O /tmp/gradle.zip
           sudo unzip -q /tmp/gradle.zip -d /opt
-          echo "/opt/gradle-8.9/bin" >> $GITHUB_PATH
+          echo "/opt/gradle-8.9/bin" >> "$GITHUB_PATH"
 
-      - name: Installer le projet Android
+      - name: Extraire le projet Android
         run: |
           ZIP_FILE=$(find . -maxdepth 1 -type f -name '*.zip' -print -quit)
           if [ -z "$ZIP_FILE" ]; then
@@ -40,10 +41,16 @@ jobs:
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
 
-      - name: Installer le SDK Android
+      - name: Configurer le SDK Android
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+          SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)
+          if [ -z "$SDKMANAGER" ]; then
+            echo "SDKMANAGER introuvable"
+            exit 1
+          fi
+          echo "SDKMANAGER trouve : $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses || true
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Compiler DOARA MASTER
         run: |
