@@ -35,17 +35,12 @@ jobs:
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
 
-      - name: Compiler APK
+      -       - name: Diagnostiquer le projet
         run: |
-          GRADLEW=$(find android-project -name gradlew -type f | head -n 1)
-          if [ -z "$GRADLEW" ]; then
-            echo "Fichier gradlew introuvable"
-            exit 1
-          fi
-          PROJECT_DIR=$(dirname "$GRADLEW")
-          cd "$PROJECT_DIR"
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          echo "===== FICHIERS DU ZIP ====="
+          find android-project -maxdepth 5 -type f | head -n 150
+          echo "===== DOSSIERS DU PROJET ====="
+          find android-project -maxdepth 3 -type d
 
       - name: Recuperer APK
         uses: actions/upload-artifact@v4
