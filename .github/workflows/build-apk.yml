@@ -46,6 +46,17 @@ jobs:
           echo "===== TOUS LES FICHIERS ====="
           find android-project/doara_android -type f | sort
 
+      - name: Preparer le code source complet
+        run: |
+          cd android-project
+          zip -qr ../DOARA-MASTER-SOURCE.zip doara_android
+
+      - name: Envoyer le code source
+        uses: actions/upload-artifact@v4
+        with:
+          name: DOARA-MASTER-SOURCE
+          path: DOARA-MASTER-SOURCE.zip
+
       - name: Afficher le code de DOARA MASTER
         run: |
           echo "===== FICHIER PRINCIPAL ====="
