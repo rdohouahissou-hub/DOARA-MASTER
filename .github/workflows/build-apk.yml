@@ -40,16 +40,15 @@ jobs:
           fi
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
-
-      - name: Examiner le code principal
-        run: |
-          echo "===== DEBUT DU CODE ====="
-          cat android-project/doara_android/app/src/main/assets/index.html
-          echo "===== FIN DU CODE ====="
-          run: |
-          echo "===== TOUS LES FICHIERS ====="
-          find android-project/doara_android -type f | sort
-
+              - name: Examiner le code principal
+    run: |
+          FILE="android-project/doara_android/app/src/main/assets/index.html"
+          echo "===== RECHERCHE CLIENTS ET SAUVEGARDE ====="
+          grep -nEi 'localStorage|sessionStorage|indexedDB|client|sauveg|storage|backup|function.*save|function.*client' "$FILE" | head -n 180 || true
+          echo "===== ACTIVITE ANDROID ====="
+          cat android-project/doara_android/app/src/main/java/com/doaramaster/app/MainActivity.java
+          echo "===== FICHIER CHECK ====="
+          cat android-project/doara_android/check.js
       - name: Preparer le code source complet
         run: |
           cd android-project
