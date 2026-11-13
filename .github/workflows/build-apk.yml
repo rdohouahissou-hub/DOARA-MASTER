@@ -30,9 +30,11 @@ jobs:
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
 
-      - name: Diagnostiquer le projet
+      - name:       - name: Lire la configuration Android
         run: |
-          echo "===== FICHIERS DU ZIP ====="
-          find android-project -maxdepth 5 -type f | head -n 150
-          echo "===== DOSSIERS DU PROJET ====="
-          find android-project -maxdepth 3 -type d
+          echo "===== SETTINGS ====="
+          cat android-project/doara_android/settings.gradle
+          echo "===== BUILD PRINCIPAL ====="
+          cat android-project/doara_android/build.gradle
+          echo "===== BUILD APPLICATION ====="
+          cat android-project/doara_android/app/build.gradle
