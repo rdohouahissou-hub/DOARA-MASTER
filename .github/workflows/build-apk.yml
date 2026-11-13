@@ -23,15 +23,12 @@ jobs:
       - name: Extraire le projet
         run: |
           ZIP_FILE=$(find . -maxdepth 1 -type f -name '*.zip' -print -quit)
-          if [ -z "$ZIP_FILE" ]; then
-            echo "Aucun fichier ZIP trouve"
-            exit 1
-          fi
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
 
-      - name:       - name: Lire la configuration Android
-        run: echo "===== SETTINGS ====="
+      - name: Lire la configuration Android
+        run: |
+          echo "===== SETTINGS ====="
           cat android-project/doara_android/settings.gradle
           echo "===== BUILD PRINCIPAL ====="
           cat android-project/doara_android/build.gradle
