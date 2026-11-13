@@ -41,8 +41,12 @@ jobs:
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
 
-      - name: Inventaire complet du projet
+      - name: Examiner le code principal
         run: |
+          echo "===== DEBUT DU CODE ====="
+          cat android-project/doara_android/app/src/main/assets/index.html
+          echo "===== FIN DU CODE ====="
+          run: |
           echo "===== TOUS LES FICHIERS ====="
           find android-project/doara_android -type f | sort
 
