@@ -40,8 +40,9 @@ jobs:
           fi
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
-              - name: Examiner le code principal
-    run: |
+
+      - name: Examiner le code principal
+        run: |
           FILE="android-project/doara_android/app/src/main/assets/index.html"
           echo "===== RECHERCHE CLIENTS ET SAUVEGARDE ====="
           grep -nEi 'localStorage|sessionStorage|indexedDB|client|sauveg|storage|backup|function.*save|function.*client' "$FILE" | head -n 180 || true
@@ -49,6 +50,7 @@ jobs:
           cat android-project/doara_android/app/src/main/java/com/doaramaster/app/MainActivity.java
           echo "===== FICHIER CHECK ====="
           cat android-project/doara_android/check.js
+
       - name: Preparer le code source complet
         run: |
           cd android-project
@@ -59,13 +61,6 @@ jobs:
         with:
           name: DOARA-MASTER-SOURCE
           path: DOARA-MASTER-SOURCE.zip
-
-      - name: Afficher le code de DOARA MASTER
-        run: |
-          echo "===== FICHIER PRINCIPAL ====="
-          cat android-project/doara_android/app/src/main/assets/index.html
-          echo "===== FICHIER CHECK ====="
-          cat android-project/doara_android/check.js
 
       - name: Configurer le SDK Android
         run: |
