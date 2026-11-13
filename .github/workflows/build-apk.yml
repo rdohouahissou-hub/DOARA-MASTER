@@ -31,8 +31,7 @@ jobs:
           unzip -q "$ZIP_FILE" -d android-project
 
       - name:       - name: Lire la configuration Android
-        run: |
-          echo "===== SETTINGS ====="
+        run: echo "===== SETTINGS ====="
           cat android-project/doara_android/settings.gradle
           echo "===== BUILD PRINCIPAL ====="
           cat android-project/doara_android/build.gradle
