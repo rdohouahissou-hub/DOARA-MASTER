@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  ANDROID_HOME: /usr/local/lib/android/sdk
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,17 +24,35 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Extraire le projet
+      - name: Installer Gradle 8.9
+        run: |
+          wget https://services.gradle.org/distributions/gradle-8.9-bin.zip -O /tmp/gradle.zip
+          sudo unzip -q /tmp/gradle.zip -d /opt
+          echo "/opt/gradle-8.9/bin" >> $GITHUB_PATH
+
+      - name: Installer le projet Android
         run: |
           ZIP_FILE=$(find . -maxdepth 1 -type f -name '*.zip' -print -quit)
+          if [ -z "$ZIP_FILE" ]; then
+            echo "ZIP introuvable"
+            exit 1
+          fi
           mkdir -p android-project
           unzip -q "$ZIP_FILE" -d android-project
 
-      - name: Lire la configuration Android
+      - name: Installer le SDK Android
         run: |
-          echo "===== SETTINGS ====="
-          cat android-project/doara_android/settings.gradle
-          echo "===== BUILD PRINCIPAL ====="
-          cat android-project/doara_android/build.gradle
-          echo "===== BUILD APPLICATION ====="
-          cat android-project/doara_android/app/build.gradle
+          yes | sdkmanager --licenses || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Compiler DOARA MASTER
+        run: |
+          cd android-project/doara_android
+          gradle assembleDebug
+
+      - name: Recuperer APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DOARA-MASTER-APK
+          path: android-project/doara_android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
