@@ -46,6 +46,13 @@ jobs:
           echo "===== TOUS LES FICHIERS ====="
           find android-project/doara_android -type f | sort
 
+      - name: Afficher le code de DOARA MASTER
+        run: |
+          echo "===== FICHIER PRINCIPAL ====="
+          cat android-project/doara_android/app/src/main/assets/index.html
+          echo "===== FICHIER CHECK ====="
+          cat android-project/doara_android/check.js
+
       - name: Configurer le SDK Android
         run: |
           SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)
