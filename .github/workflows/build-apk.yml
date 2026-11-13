@@ -1,1 +1,54 @@
-run: unzip "$(find . -maxdepth 1 -type f -name '*.zip' -print -quit)"
+
+name: Construire DOARA MASTER APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recuperer le projet
+        uses: actions/checkout@v4
+
+      - name: Installer Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installer Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Extraire le projet Android
+        run: |
+          ZIP_FILE=$(find . -maxdepth 1 -type f -name '*.zip' -print -quit)
+          if [ -z "$ZIP_FILE" ]; then
+            echo "Aucun fichier ZIP trouve"
+            exit 1
+          fi
+          mkdir -p android-project
+          unzip -q "$ZIP_FILE" -d android-project
+
+      - name: Compiler APK
+        run: |
+          GRADLEW=$(find android-project -name gradlew -type f | head -n 1)
+          if [ -z "$GRADLEW" ]; then
+            echo "Fichier gradlew introuvable"
+            exit 1
+          fi
+          PROJECT_DIR=$(dirname "$GRADLEW")
+          cd "$PROJECT_DIR"
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Recuperer APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DOARA-MASTER-APK
+          path: android-project/**/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
